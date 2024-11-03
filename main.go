@@ -15,15 +15,23 @@ func main() {
 	//yeni bir i18n dil paketi oluştur
 	bundle := i18n.NewBundle(language.Turkish) //sayfa default olarak türkçe yüklensin
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
+	files := []string{
+		"locales/active.en.json",
+		"locales/active.tr.json",
+		"locales/active.es.json",
+		"locales/active.fr.json",
+		"locales/active.de.json",
+		"locales/active.it.json",
+		"locales/active.pt.json",
+		"locales/active.ru.json",
+		"locales/active.zh.json",
+	}
+	for _, file := range files {
+		if _, err := bundle.LoadMessageFile(file); err != nil {
+			log.Fatalf("Failed to load %s: %v", file, err)
+		}
+	}
 
-	_, err := bundle.LoadMessageFile("locales/active.en.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = bundle.LoadMessageFile("locales/active.tr.json")
-	if err != nil {
-		log.Fatal(err)
-	}
 	r := chi.NewRouter()
 	r.Get("/localize", controllers.HandleLocalization(bundle))
 	log.Println("Server is running on :8080")
